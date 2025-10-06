@@ -1,32 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import KnappRad from './components/KnappRad.vue'
 
+const knappar = ref(['STEN', 'SAX', 'PÅSE'])
 const score = ref({ spelare: 0, dator: 0 })
 const resultat = ref('Du vann!')
-
-function spelarval(e) {
-  let buttons = document.getElementsByClassName('alternativ')
-  for (let b of buttons) {
-    b.classList.remove('spelarval')
-  }
-  e.target.classList.add('spelarval')
-  datorval()
-  hittaVinnare()
-}
-
-function datorval() {
-  let val = Math.floor(Math.random() * 3)
-  let alternativ = ['Sten', 'Sax', 'Påse']
-  let buttons = document.getElementsByClassName('alternativ')
-  for (let b of buttons) {
-    b.classList.remove('datorval')
-    b.title = ''
-    if (b.textContent == alternativ[val]) {
-      b.classList.add('datorval')
-      b.title = 'Datorns val'
-    }
-  }
-}
 
 function hittaVinnare() {
   let buttons = document.getElementsByClassName('alternativ')
@@ -70,11 +48,7 @@ function reset() {
   </header>
 
   <main>
-    <div class="knapprad">
-      <button class="alternativ" @click="spelarval">Sten</button>
-      <button class="alternativ" @click="spelarval">Sax</button>
-      <button class="alternativ" @click="spelarval">Påse</button>
-    </div>
+    <KnappRad :knappar="knappar" />
     <div class="resultat">
       <p id="resultat">{{ resultat }}</p>
     </div>
