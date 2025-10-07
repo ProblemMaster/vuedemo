@@ -8,23 +8,15 @@ const knappar = ref(['Sten', 'Sax', 'Påse'])
 const score = ref({ spelare: 0, dator: 0 })
 const resultat = ref({})
 const vinnare = ref('')
+const reset = ref(true)
 
 function hittaVinnare(valdaKnappar) {
+  reset.value = false
   vinnare.value = ''
   let spelare = knappar.value.indexOf(valdaKnappar.spelare)
   let dator = knappar.value.indexOf(valdaKnappar.dator)
 
   resultat.value = { spelare: spelare, dator: dator }
-}
-
-function reset() {
-  score.value.spelare = 0
-  score.value.dator = 0
-  let buttons = document.getElementsByClassName('alternativ')
-  for (let b of buttons) {
-    b.classList.remove('spelarval')
-    b.classList.remove('datorval')
-  }
 }
 
 function raknaPoang(v) {
@@ -43,10 +35,10 @@ function raknaPoang(v) {
   </header>
 
   <main>
-    <KnappRad :knappar="knappar" @valda-knappar="hittaVinnare" />
-    <ResultatRad :valda-knappar="resultat" @vinnare="raknaPoang" />
-    <PoangRad :vinnare="vinnare" />
-    <button id="nolla" @click="reset">Nollställ poängen</button>
+    <KnappRad :knappar="knappar" :reset="reset" @valda-knappar="hittaVinnare" />
+    <ResultatRad :valda-knappar="resultat" :reset="reset" @vinnare="raknaPoang" />
+    <PoangRad :vinnare="vinnare" :reset="reset" />
+    <button id="nolla" @click="reset = true">Nollställ poängen</button>
   </main>
 </template>
 
@@ -55,8 +47,9 @@ header {
   text-align: center;
   margin-bottom: 1.2em;
 }
-
 #nolla {
+  margin: auto;
+  display: block;
   margin-top: 2em;
   padding: 0.3em 0.6em;
   font-size: 0.8em;

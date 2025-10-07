@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 
-const props = defineProps(['valdaKnappar'])
+const props = defineProps(['valdaKnappar', 'reset'])
 const resultat = ref('Låt spelet börja!')
 const emit = defineEmits(['vinnare'])
 
@@ -26,6 +26,15 @@ watch(props, () => {
     }
   }
 })
+
+watch(
+  () => props.reset,
+  () => {
+    if (props.reset) {
+      resultat.value = 'låt spelet börja'
+    }
+  },
+)
 </script>
 
 <template>

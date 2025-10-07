@@ -1,8 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 
-const props = defineProps(['vinnare'])
+const props = defineProps(['vinnare', 'reset'])
 const score = ref({ spelare: 0, dator: 0 })
+
 watch(props, () => {
   if (props.vinnare == 'spelare') {
     score.value.spelare++
@@ -10,6 +11,16 @@ watch(props, () => {
     score.value.dator++
   }
 })
+
+watch(
+  () => props.reset,
+  () => {
+    if (props.reset) {
+      score.value.spelare = 0
+      score.value.dator = 0
+    }
+  },
+)
 </script>
 
 <template>
