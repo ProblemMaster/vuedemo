@@ -1,34 +1,39 @@
 {
-    "users": [
-        {
-            "id": 63833,
-            "namn": "Arwid",
-            "bild": "arwid.jfif"
-        },
-        {
-            "id": 63835,
-            "namn": "Isac",
-            "bild": "isac.jfif"
-        },
-        {
-            "id": 63829,
-            "namn": "Felicia",
-            "bild": "felicia.jfif"
-        },
-        {
-            "id": 63832,
-            "namn": "Jesper",
-            "bild": "jesper.jfif"
-        },
-        {
-            "id": 63834,
-            "namn": "Ivar",
-            "bild": "ivar.jfif"
-        },
-        {
-            "id": 63838,
-            "namn": "Melker",
-            "bild": "melker.jfif"
-        }
-    ]
+  "users": [
+    {
+      "id": 63833,
+      "namn": "Arwid",
+      "bild": "arwid.jfif"
+    },
+    {
+      "id": 63835,
+      "namn": "Isac",
+      "bild": "isac.jfif"
+    },
+    {
+      "id": 63829,
+      "namn": "Felicia",
+      "bild": "felicia.jfif"
+    },
+    {
+      "id": 63832,
+      "namn": "Jesper",
+      "bild": "jesper.jfif"
+    },
+    {
+      "id": 63834,
+      "namn": "Ivar",
+      "bild": "ivar.jfif"
+    },
+    {
+      "id": 63838,
+      "namn": "Melker",
+      "bild": "melker.jfif"
+    },
+    {
+      "id": 1,
+      "namn": "Kjell",
+      "bild": "kjell.png"
+    }
+  ]
 }

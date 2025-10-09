@@ -20,6 +20,7 @@ const props = defineProps(['user'])
   max-width: 250px;
   border: 1px soid navy;
   box-shadow: 5px 5px 5px #a79dff;
+  margin: 1em;
 }
 p {
   margin-left: 1em;

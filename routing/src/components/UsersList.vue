@@ -1,6 +1,7 @@
 <script setup>
 import { watchEffect } from 'vue'
 import UserCard from './UserCard.vue'
+import router from '@/router'
 
 const props = defineProps(['userList'])
 watchEffect(() => {
@@ -11,5 +12,10 @@ watchEffect(() => {
 </script>
 
 <template>
-  <UserCard v-for="item in props.userList.users" :key="item" :user="item" />
+  <UserCard
+    v-for="item in props.userList.users"
+    :key="item"
+    :user="item"
+    @click="router.push('/user/' + item.id)"
+  />
 </template>
