@@ -1,7 +1,7 @@
 export function getForecast(location) {
   return new Promise((resolve, reject) => {
     fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.long}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_gusts_10m_max,wind_speed_10m_max,wind_direction_10m_dominant&timezone=auto`,
+      `https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.long}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_gusts_10m_max,wind_speed_10m_max,wind_direction_10m_dominant&timezone=auto&wind_speed_unit=ms`,
     )
       .then((response) => {
         if (response.ok) {
@@ -44,7 +44,7 @@ function transformData(raw) {
       wind: {
         direction: raw.daily.wind_direction_10m_dominant[i],
         direction_unit: raw.daily_units.wind_direction_10m_dominant,
-        speed: raw.daily.wind_speed_10m_max,
+        speed: raw.daily.wind_speed_10m_max[i],
         gusts: raw.daily.wind_gusts_10m_max[i],
         unit: raw.daily_units.wind_speed_10m_max,
       },

@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getForecast } from '@/services/forecastService'
+import ForecastResults from '@/components/forecastResults.vue'
 
 const info = ref({})
 const location = ref({ lat: 60.0, long: 20.0, name: 'Nuvarande positioin' })
@@ -25,9 +26,7 @@ onMounted(() => {
     Long: <span>{{ location.long.toFixed(3) }}</span>
   </p>
 
-  <div>
-    {{ info }}
-  </div>
+  <ForecastResults :forecast="info" />
 </template>
 
 <style scoped>
