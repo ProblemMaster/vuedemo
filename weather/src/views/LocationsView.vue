@@ -1,4 +1,5 @@
 <script setup>
+import router from '@/router'
 import { ref } from 'vue'
 
 const save = () => {
@@ -27,6 +28,17 @@ const reset = () => {
   }
 }
 
+function setDefault(e) {
+  locationsList.value.map((itm) => {
+    itm.default = e.position.lat == itm.position.lat && e.position.long == itm.position.long
+  })
+  locationsList.value.forEach((itm) => {
+    if (itm.default) {
+      router.push(`/forecast/${itm.name}/${itm.position.lat}/${itm.position.long}`)
+    }
+  })
+}
+
 const location = ref({ name: '', position: { lat: 0, long: 0 }, default: false })
 const locationsList = ref([
   { name: 'Mariehamn', position: { lat: 60.0, long: 20.0 }, default: false },
@@ -53,8 +65,8 @@ const locationsList = ref([
   <ul>
     <li
       v-for="loc in locationsList"
-      :key="loc.name"
-      @click="goToForecast(loc.name)"
+      :key="loc"
+      @click="setDefault(loc)"
       :class="loc.default ? 'default' : ''"
     >
       {{ loc.name }}
