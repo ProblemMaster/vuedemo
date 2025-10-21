@@ -1,23 +1,33 @@
 <script setup>
 import router from '@/router'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+
+const location = ref({ name: '', position: { lat: 0, long: 0 }, default: false })
+const locationsList = ref([])
+
+onMounted(() => {
+  locationsList.value = JSON.parse(localStorage.getItem('locations')) ?? []
+})
 
 const save = () => {
-  if (!location.value.name.trim()) return
-
-  locationsList.value.push({
-    name: location.value.name,
-    position: {
-      lat: location.value.position.lat,
-      long: location.value.position.long,
-    },
-    default: false,
-  })
+  if (location.value.edit) {
+    locationsList.value.forEach((itm) => {
+      if (itm.edit == true) {
+        itm.name = location.value.name
+        itm.lat = location.value.lat
+        itm.long = location.value.long
+      }
+    })
+  } else {
+    locationsList.value.push(location.value)
+  }
   location.value = { name: '', position: { lat: 0, long: 0 }, default: false }
+  localStorage.setItem('locations', JSON.stringify(locationsList.value))
 }
 
 const remove = (loc) => {
   locationsList.value = locationsList.value.filter((l) => l !== loc)
+  localStorage.setItem('locations', JSON.stringify(locationsList.value))
 }
 
 const reset = () => {
@@ -32,6 +42,8 @@ function setDefault(e) {
   locationsList.value.map((itm) => {
     itm.default = e.position.lat == itm.position.lat && e.position.long == itm.position.long
   })
+  localStorage.setItem('locations', JSON.stringify(locationsList.value))
+
   locationsList.value.forEach((itm) => {
     if (itm.default) {
       router.push(`/forecast/${itm.name}/${itm.position.lat}/${itm.position.long}`)
@@ -39,13 +51,10 @@ function setDefault(e) {
   })
 }
 
-const location = ref({ name: '', position: { lat: 0, long: 0 }, default: false })
-const locationsList = ref([
-  { name: 'Mariehamn', position: { lat: 60.0, long: 20.0 }, default: false },
-  { name: 'Stockholm', position: { lat: 59.32, long: 18.32 }, default: true },
-  { name: 'London', position: { lat: 51.5, long: -0.1 }, default: false },
-  { name: 'Cape Town', position: { lat: -34, long: 18.5 }, default: false },
-])
+function editValue(itm) {
+  location.value = JSON.parse(JSON.stringify)
+  itm.edit = true
+}
 </script>
 
 <template>
@@ -72,6 +81,7 @@ const locationsList = ref([
       {{ loc.name }}
       ( {{ Math.abs(loc.position.lat).toFixed(2) }}°{{ loc.position.lat > 0 ? 'N' : 'S' }}
       {{ Math.abs(loc.position.long).toFixed(2) }}°{{ loc.position.long > 0 ? 'E' : 'W' }} )
+      <span class="edit" @click.stop="editValue(loc)">e</span>
       <span class="remove" @click.stop="remove(loc)">x</span>
     </li>
   </ul>

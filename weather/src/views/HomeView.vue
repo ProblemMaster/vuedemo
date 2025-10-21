@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { getForecast } from '@/services/forecastService'
 import ForecastResults from '@/components/forecastResults.vue'
 
 const info = ref({})
-const location = ref({ lat: 60.0, long: 20.0, name: 'Nuvarande positioin' })
+const location = ref({})
 const props = defineProps(['name', 'lat', 'long'])
 
 function fetchForeCast(loc) {
@@ -18,32 +18,49 @@ function fetchForeCast(loc) {
 }
 
 watchEffect(() => {
+  let locationsList = JSON.parse(localStorage.getItem('locations')) ?? []
+  let tmpLocation = {}
   if (typeof props.name !== 'undefined') {
+    tmpLocation = locationsList.find((loc) => {
+      return loc.name.toLowerCase() === props.name.toLowerCase()
+    })
+    if (tmpLocation) {
+      location.value.name = tmpLocation.name
+      location.value.lat = tmpLocation.position.lat
+      location.value.long = tmpLocation.position.long
+    }
+  } else {
+    location.value = { lat: 60.0, long: 20.0, name: 'Nuvarande position' }
+  }
+  if (!tmpLocation && typeof props.lat !== 'undefined' && typeof props.long !== 'undefined') {
     location.value.name = props.name
     location.value.lat = parseFloat(props.lat)
     location.value.long = parseFloat(props.long)
   }
-  fetchForeCast(location.value)
-})
-
-watch(props, () => {
-  if (typeof props.name == 'undefined') {
-    location.value = { lat: 60.0, long: 20.0, name: 'Nuvarande position' }
+  if (typeof location.value.name !== 'undefined') {
     fetchForeCast(location.value)
   }
 })
 </script>
 
 <template>
-  <h2>{{ location.name }}</h2>
-  <p class="location">
-    Lat: <span>{{ location.lat.toFixed(3) }}</span>
-  </p>
-  <p class="location">
-    Long: <span>{{ location.long.toFixed(3) }}</span>
-  </p>
+  <main v-if="!location.name">
+    <h2>Angiven plats kan inte hittas</h2>
+    <p>
+      <i>{{ props.name }}</i> finns inte i listan över platser
+    </p>
+  </main>
+  <main v-else>
+    <h2>{{ location.name }}</h2>
+    <p class="location">
+      Lat: <span>{{ location.lat.toFixed(3) }}</span>
+    </p>
+    <p class="location">
+      Long: <span>{{ location.long.toFixed(3) }}</span>
+    </p>
 
-  <ForecastResults :forecast="info" />
+    <ForecastResults :forecast="info" />
+  </main>
 </template>
 
 <style scoped>
