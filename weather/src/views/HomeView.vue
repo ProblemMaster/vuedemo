@@ -1,16 +1,26 @@
 <script setup>
 import { ref, watchEffect } from 'vue'
-import { getForecast } from '@/services/forecastService'
+import { getForecast, getCurrentWeather } from '@/services/forecastService'
 import ForecastResults from '@/components/forecastResults.vue'
+import CurrentWeather from '@/components/currentWeather.vue'
 
 const info = ref({})
 const location = ref({})
+const currentWeather = ref({})
 const props = defineProps(['name', 'lat', 'long'])
 
 function fetchForeCast(loc) {
   getForecast(loc)
     .then((response) => {
       info.value = response
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+
+  getCurrentWeather(loc)
+    .then((response) => {
+      currentWeather.value = response
     })
     .catch((err) => {
       console.log(err)
@@ -59,6 +69,7 @@ watchEffect(() => {
       Long: <span>{{ location.long.toFixed(3) }}</span>
     </p>
 
+    <CurrentWeather v-if="currentWeather?.code" :weather="currentWeather" />
     <ForecastResults :forecast="info" />
   </main>
 </template>
