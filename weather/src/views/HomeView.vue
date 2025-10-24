@@ -1,13 +1,23 @@
 <script setup>
-import { ref, watchEffect } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 import { getForecast, getCurrentWeather } from '@/services/forecastService'
 import ForecastResults from '@/components/forecastResults.vue'
 import CurrentWeather from '@/components/currentWeather.vue'
+import { getPosition } from '@/services/positioningService'
 
 const info = ref({})
 const location = ref({})
 const currentWeather = ref({})
 const props = defineProps(['name', 'lat', 'long'])
+const currentLocation = ref({ lat: 60.0, long: 20.0, name: 'Current Position' })
+
+onMounted(() => {
+  getPosition()
+    .then((pos) => {
+      currentLocation.value = { name: 'Current location', ...pos.position }
+    })
+    .catch(() => {})
+})
 
 function fetchForeCast(loc) {
   getForecast(loc)
@@ -40,7 +50,7 @@ watchEffect(() => {
       location.value.long = tmpLocation.position.long
     }
   } else {
-    location.value = { lat: 60.0, long: 20.0, name: 'Nuvarande position' }
+    location.value = currentLocation.value
   }
   if (!tmpLocation && typeof props.lat !== 'undefined' && typeof props.long !== 'undefined') {
     location.value.name = props.name
@@ -49,6 +59,12 @@ watchEffect(() => {
   }
   if (typeof location.value.name !== 'undefined') {
     fetchForeCast(location.value)
+  }
+})
+
+watch(currentLocation, () => {
+  if (location.value.name == currentLocation.value.name) {
+    fetchForeCast(currentLocation.value)
   }
 })
 </script>
