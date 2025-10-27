@@ -91,8 +91,26 @@ watch(currentLocation, () => {
 </template>
 
 <style scoped>
+main {
+  background-color: #181818;
+  color: #f1f1f1;
+  padding: 2em;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  margin: 2em auto;
+  max-width: 800px;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+h2 {
+  color: #4fc3f7;
+  font-size: 1.8rem;
+  margin-bottom: 1em;
+  text-align: center;
+}
 .location {
   display: inline-block;
   margin: 0 1em;
+  color: #ccc;
+  font-size: 1rem;
 }
 </style>

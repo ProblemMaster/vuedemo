@@ -11,6 +11,14 @@ function getText(code) {
     }).description ?? 'Unknown'
   return wcText
 }
+
+function windDirectionStyle(deg) {
+  const rotation = (deg + 180) % 360
+  return {
+    transform: `rotate(${rotation}deg)`,
+    transition: 'transform 0.4s ease',
+  }
+}
 </script>
 <template>
   <ul>
@@ -30,29 +38,51 @@ function getText(code) {
       }}%)
     </li>
     <li>
-      {{ day.wind.speed }}({{ day.wind.gusts }}){{ day.wind.unit }}<br />{{ day.wind.direction
-      }}{{ day.wind.direction_unit }}
+      {{ day.wind.speed }}({{ day.wind.gusts }}){{ day.wind.unit }}<br />
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        :style="windDirectionStyle(day.wind.direction)"
+        fill="#4fc3f7"
+      >
+        <path d="M12 2 L19 21 H12 L5 21 Z" />
+      </svg>
+      {{ day.wind.direction }}{{ day.wind.direction_unit }}
     </li>
   </ul>
 </template>
 <style scoped>
 ul {
-  padding: 0;
+  padding: 0.5em 1em;
   display: grid;
-  grid-template-columns: 12% 12% 22% 15% auto;
+  grid-template-columns: 12% 20% 22% 20% auto;
+  align-items: center;
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-bottom: 1px solid #2a2a2a;
+  transition: background-color 0.3s ease;
 }
-ul:nth-child(even) {
-  background-color: aqua;
-  color: black;
+ul:first-of-type {
+  background-color: #121212;
+  font-weight: bold;
+  color: #4fc3f7;
 }
-ul:nth-child(odd) {
-  background-color: antiquewhite;
-  color: black;
+ul:hover {
+  background-color: #252525;
 }
 li {
-  padding: 0 0.5em;
   list-style-type: none;
-  vertical-align: top;
+  padding: 0.5em;
+  text-align: center;
+  font-size: 0.95rem;
+}
+ul:nth-child(odd):not(:first-child) {
+  background-color: #181818;
+}
+.wind-svg {
+  display: inline-block;
+  vertical-align: middle;
 }
 </style>
 så här är min forecastResult.vue
