@@ -2,25 +2,76 @@
 import router from '@/router'
 import { onMounted, ref } from 'vue'
 
-const location = ref({ name: '', position: { lat: 0, long: 0 }, default: false })
+// state
+const location = ref({ id: null, name: '', position: { lat: 0, long: 0 }, default: false })
 const locationsList = ref([])
 
+// Helper: säkra uuid-fallback
+function makeId() {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
+  } catch (e) {}
+  // fallback
+  return `${Date.now()}-${Math.floor(Math.random() * 1e6)}`
+}
+
+// on mount: läs och migrera gamla poster (lägg till id om saknas)
 onMounted(() => {
-  locationsList.value = JSON.parse(localStorage.getItem('locations')) ?? []
+  const raw = JSON.parse(localStorage.getItem('locations')) ?? []
+  // säkerställ att varje post har id och korrekta siffror
+  locationsList.value = raw.map((it) => {
+    const migrated = {
+      id: it.id ?? makeId(),
+      name: it.name ?? '',
+      position: {
+        lat: it?.position?.lat !== undefined ? parseFloat(it.position.lat) || 0 : 0,
+        long: it?.position?.long !== undefined ? parseFloat(it.position.long) || 0 : 0,
+      },
+      default: !!it.default,
+    }
+    return migrated
+  })
+  localStorage.setItem('locations', JSON.stringify(locationsList.value))
 })
 
+// save (create/update)
 const save = () => {
-  if (location.value.edit) {
-    locationsList.value.forEach((itm) => {
-      if (itm.edit == true) {
-        itm.name = location.value.name
-        itm.position.lat = location.value.position.lat
-        itm.position.long = location.value.position.long
-        itm.edit = false
+  // basic validation
+  if (
+    !location.value.name ||
+    Number.isNaN(parseFloat(location.value.position.lat)) ||
+    Number.isNaN(parseFloat(location.value.position.long))
+  ) {
+    // du kan byta ut mot bättre UI-notifiering
+    console.warn('Incomplete location: name and coordinates required')
+    return
+  }
+
+  if (location.value.id) {
+    // update existing
+    const index = locationsList.value.findIndex((l) => l.id === location.value.id)
+    if (index !== -1) {
+      locationsList.value[index] = {
+        ...location.value,
+        position: {
+          lat: parseFloat(location.value.position.lat),
+          long: parseFloat(location.value.position.long),
+        },
       }
-    })
+    } else {
+      // Om id saknas i listan (oväntat), skapa ny med samma id
+      locationsList.value.push({
+        ...location.value,
+        position: {
+          lat: parseFloat(location.value.position.lat),
+          long: parseFloat(location.value.position.long),
+        },
+      })
+    }
   } else {
+    // create new
     locationsList.value.push({
+      id: makeId(),
       name: location.value.name,
       position: {
         lat: parseFloat(location.value.position.lat),
@@ -30,37 +81,45 @@ const save = () => {
     })
   }
 
-  location.value = { name: '', position: { lat: 0, long: 0 }, default: false }
+  // reset + persist
+  reset()
   localStorage.setItem('locations', JSON.stringify(locationsList.value))
 }
 
+// remove
 const remove = (loc) => {
-  locationsList.value = locationsList.value.filter((l) => l !== loc)
+  locationsList.value = locationsList.value.filter((l) => l.id !== loc.id)
   localStorage.setItem('locations', JSON.stringify(locationsList.value))
 }
 
+// reset (viktig: id null)
 const reset = () => {
   location.value = {
+    id: null,
     name: '',
     position: { lat: 0, long: 0 },
     default: false,
   }
 }
 
+// goToForecast: sätt default via id och navigera
 function goToForecast(loc) {
-  // Sätt som default och spara i localStorage
   locationsList.value.forEach((itm) => {
-    itm.default = itm.position.lat === loc.position.lat && itm.position.long === loc.position.long
+    itm.default = itm.id === loc.id
   })
   localStorage.setItem('locations', JSON.stringify(locationsList.value))
-
-  // Navigera till sidan för den platsen
-  router.push(`/forecast/${loc.name}/${loc.position.lat}/${loc.position.long}`)
+  router.push(`/forecast/${encodeURIComponent(loc.name)}/${loc.position.lat}/${loc.position.long}`)
 }
 
+// editValue: kopiera (deep clone) in i location.value
 function editValue(itm) {
-  location.value = JSON.parse(JSON.stringify(itm))
-  itm.edit = true
+  // använd structuredClone om tillgängligt (behåller datatyper), annars JSON-fallback
+  try {
+    location.value =
+      typeof structuredClone === 'function' ? structuredClone(itm) : JSON.parse(JSON.stringify(itm))
+  } catch (e) {
+    location.value = JSON.parse(JSON.stringify(itm))
+  }
 }
 </script>
 
@@ -76,9 +135,9 @@ function editValue(itm) {
           type="number"
           max="90"
           min="-90"
-          step=".1"
+          step="0.1"
           size="5"
-          v-model="location.position.lat"
+          v-model.number="location.position.lat"
         />
       </label>
       <label>
@@ -87,15 +146,15 @@ function editValue(itm) {
           type="number"
           max="180"
           min="-180"
-          step=".1"
+          step="0.1"
           size="8"
-          v-model="location.position.long"
+          v-model.number="location.position.long"
         />
       </label>
 
       <div class="buttons">
-        <button @click="save">Save</button>
-        <button @click="reset">Reset</button>
+        <button type="button" @click="save">{{ location.id ? 'Update' : 'Save' }}</button>
+        <button type="button" @click="reset">Reset</button>
       </div>
     </div>
 
@@ -106,7 +165,7 @@ function editValue(itm) {
     <ul class="locations-list">
       <li
         v-for="loc in locationsList"
-        :key="loc.name"
+        :key="loc.id"
         :class="{ default: loc.default }"
         @click="goToForecast(loc)"
       >
