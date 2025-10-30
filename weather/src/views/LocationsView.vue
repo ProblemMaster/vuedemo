@@ -36,53 +36,51 @@ onMounted(() => {
 
 // save (create/update)
 const save = () => {
-  // basic validation
-  if (
-    !location.value.name ||
-    Number.isNaN(parseFloat(location.value.position.lat)) ||
-    Number.isNaN(parseFloat(location.value.position.long))
-  ) {
-    // du kan byta ut mot bättre UI-notifiering
-    console.warn('Incomplete location: name and coordinates required')
+  // Grundläggande validering
+  const lat = parseFloat(location.value.position.lat)
+  const long = parseFloat(location.value.position.long)
+  const name = location.value.name.trim()
+
+  if (!name || isNaN(lat) || isNaN(long)) {
+    alert('Fyll i namn och giltiga koordinater.')
     return
   }
 
+  // Dublettkontroll – kolla både namn och koordinater
+  const duplicate = locationsList.value.find(
+    (l) =>
+      l.id !== location.value.id &&
+      (l.name.toLowerCase() === name.toLowerCase() ||
+        (l.position.lat === lat && l.position.long === long)),
+  )
+
+  if (duplicate) {
+    alert('En plats med samma namn eller koordinater finns redan.')
+    return
+  }
+
+  // Uppdatera befintlig plats om id finns
   if (location.value.id) {
-    // update existing
     const index = locationsList.value.findIndex((l) => l.id === location.value.id)
     if (index !== -1) {
       locationsList.value[index] = {
         ...location.value,
-        position: {
-          lat: parseFloat(location.value.position.lat),
-          long: parseFloat(location.value.position.long),
-        },
+        name,
+        position: { lat, long },
       }
-    } else {
-      // Om id saknas i listan (oväntat), skapa ny med samma id
-      locationsList.value.push({
-        ...location.value,
-        position: {
-          lat: parseFloat(location.value.position.lat),
-          long: parseFloat(location.value.position.long),
-        },
-      })
     }
   } else {
-    // create new
+    // Skapa ny plats
     locationsList.value.push({
-      id: makeId(),
-      name: location.value.name,
-      position: {
-        lat: parseFloat(location.value.position.lat),
-        long: parseFloat(location.value.position.long),
-      },
+      id: crypto.randomUUID(),
+      name,
+      position: { lat, long },
       default: false,
     })
   }
 
-  // reset + persist
-  reset()
+  // Rensa formuläret och spara till localStorage
+  location.value = { id: null, name: '', position: { lat: 0, long: 0 }, default: false }
   localStorage.setItem('locations', JSON.stringify(locationsList.value))
 }
 
