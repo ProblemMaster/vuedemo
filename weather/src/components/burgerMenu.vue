@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink } from 'vue-router'
+
 const props = defineProps(['active'])
 const emits = defineEmits(['toggle-menu'])
 
@@ -8,12 +10,19 @@ function toggleActive() {
 </script>
 
 <template>
-  <div id="burger" :class="{ active: props.active }" @click="toggleActive">
-    <button type="button" class="burger-button" title="Menu">
+  <div id="burger">
+    <button
+      type="button"
+      class="burger-button"
+      title="Menu"
+      :class="{ active: props.active }"
+      @click="toggleActive"
+    >
       <span class="burger-bar bar--1"></span>
       <span class="burger-bar bar--2"></span>
       <span class="burger-bar bar--3"></span>
     </button>
+
     <nav class="navbar" v-show="props.active">
       <RouterLink to="/">Home</RouterLink>
       <RouterLink to="/locations">Locations</RouterLink>
@@ -24,61 +33,66 @@ function toggleActive() {
 <style scoped>
 #burger {
   display: block;
+  position: relative; /* för att navbar absolut ska baseras på detta */
 }
+
 .burger-button {
   position: relative;
   height: 30px;
   width: 40px;
-  display: block;
-  z-index: 99;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  pointer-events: all;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 1;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+
 .burger-bar {
-  background-color: #ed1313;
   position: absolute;
-  top: 50%;
-  right: 6px;
   left: 6px;
+  right: 6px;
   height: 3px;
-  width: auto;
+  background-color: #ed1313;
+  top: 50%;
   margin-top: -1px;
   transition:
     transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1),
     opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
     background-color 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+
 .bar--1 {
-  -webkit-transform: translateY(-6px);
   transform: translateY(-6px);
   top: 40%;
 }
 .bar--2 {
   transform-origin: 100% 50%;
-  transform: scaleX(1);
 }
 .bar--3 {
   transform: translateY(6px);
   top: 60%;
 }
-button {
-  cursor: pointer;
-}
-#burger.active .burger-button {
+
+.burger-button.active {
   transform: rotate(-180deg);
 }
-#burger.active .bar--1 {
+.burger-button.active .bar--1 {
   transform: rotate(45deg);
   top: 50%;
 }
-#burger.active .bar--2 {
+.burger-button.active .bar--2 {
   opacity: 0;
 }
-#burger.active .bar--3 {
+.burger-button.active .bar--3 {
   transform: rotate(-45deg);
   top: 50%;
+}
+
+/* Endast ändring här: gör att navbar inte trycker ner sidan */
+.navbar {
+  position: absolute; /* nyckeländring */
+  top: 100%; /* precis under knappen */
+  left: 0;
+  width: 100%;
 }
 </style>
