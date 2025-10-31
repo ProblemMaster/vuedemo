@@ -62,26 +62,27 @@ function windDirectionStyle(deg) {
 </template>
 
 <style scoped>
+/* Light mode (default) */
 .forecast-wrapper {
-  background-color: #1e1e1e;
-  color: #f5f5f5;
+  background-color: #f9f9f9;
+  color: #222;
   border-radius: 14px;
   padding: 1.5em;
   margin: 2em auto;
   max-width: 800px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 h3 {
   text-align: center;
-  color: #4fc3f7;
+  color: #0288d1;
   margin-bottom: 1.2em;
   font-weight: 600;
 }
 
 .forecast-card {
-  background-color: #252525;
+  background-color: #fff;
   border-radius: 12px;
   padding: 1em 1.2em;
   margin-bottom: 1em;
@@ -92,7 +93,7 @@ h3 {
 }
 
 .forecast-card:hover {
-  background-color: #303030;
+  background-color: #e0e0e0;
 }
 
 .forecast-top {
@@ -108,12 +109,11 @@ h3 {
 
 .date {
   font-weight: bold;
-  color: #82e9de;
+  color: #0288d1;
 }
-
 .desc {
   font-size: 0.9em;
-  color: #aaa;
+  color: #555;
   margin-top: 0.2em;
 }
 
@@ -122,7 +122,6 @@ h3 {
   color: #ffb74d;
   font-weight: 600;
 }
-
 .temp-min {
   color: #ffd180;
   margin-left: 0.2em;
@@ -141,15 +140,14 @@ h3 {
   align-items: center;
   gap: 0.8em;
 }
-
 .wind-arrow {
   transition: transform 0.4s ease;
 }
-
 .wind-info {
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
+  color: #555;
 }
 
 .precip-section {
@@ -157,30 +155,61 @@ h3 {
   flex-direction: column;
   align-items: flex-end;
   font-size: 0.9em;
+  color: #555;
 }
-
 .precip-section small {
-  color: #aaa;
+  color: #777;
 }
 
 @media (max-width: 700px) {
   .forecast-card {
     padding: 1em;
   }
-
   .forecast-top {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.4em;
   }
-
   .forecast-bottom {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .precip-section {
     align-items: flex-start;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .forecast-wrapper {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.55);
+  }
+  h3 {
+    color: #4fc3f7;
+  }
+  .forecast-card {
+    background-color: #252525;
+  }
+  .forecast-card:hover {
+    background-color: #303030;
+  }
+  .date {
+    color: #82e9de;
+  }
+  .desc {
+    color: #aaa;
+  }
+  .temp-section {
+    color: #ffb74d;
+  }
+  .temp-min {
+    color: #ffd180;
+  }
+  .wind-info,
+  .precip-section {
+    color: #ccc;
   }
 }
 </style>

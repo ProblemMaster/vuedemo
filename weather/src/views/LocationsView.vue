@@ -185,14 +185,15 @@ function editValue(itm) {
 </template>
 
 <style scoped>
+/* === 🌞 Light Mode (standard) === */
 .locations-wrapper {
-  background-color: #1e1e1e;
-  color: #f5f5f5;
+  background-color: #f9f9f9;
+  color: #222;
   border-radius: 14px;
   padding: 1.5em;
   margin: 2em auto;
   max-width: 800px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -212,9 +213,9 @@ label {
 input {
   padding: 0.4em;
   border-radius: 6px;
-  border: 1px solid #333;
-  background-color: #2a2a2a;
-  color: #fff;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #000;
 }
 
 .buttons {
@@ -224,17 +225,17 @@ input {
 }
 
 button {
-  background-color: #4fc3f7;
+  background-color: #03a9f4;
   border: none;
   padding: 0.5em 1em;
   border-radius: 8px;
   cursor: pointer;
-  color: #000;
+  color: #fff;
   font-weight: 600;
 }
 
 button:hover {
-  background-color: #03a9f4;
+  background-color: #0288d1;
 }
 
 .locations-list {
@@ -244,7 +245,7 @@ button:hover {
 }
 
 .locations-list li {
-  background-color: #252525;
+  background-color: #ffffff;
   padding: 0.8em 1em;
   margin-bottom: 0.5em;
   border-radius: 10px;
@@ -252,16 +253,19 @@ button:hover {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+  border: 1px solid #ddd;
 }
 
 .locations-list li:hover {
-  background-color: #333;
+  background-color: #f0f0f0;
 }
 
 .locations-list li.default {
-  border: 1px solid #4fc3f7;
-  box-shadow: 0 0 10px rgba(79, 195, 247, 0.4);
+  border: 2px solid #03a9f4;
+  box-shadow: 0 0 8px rgba(3, 169, 244, 0.3);
 }
 
 .loc-info {
@@ -270,7 +274,7 @@ button:hover {
 }
 
 .coords {
-  color: #aaa;
+  color: #555;
   font-size: 0.85em;
 }
 
@@ -287,5 +291,47 @@ button:hover {
 
 .remove:hover {
   color: red;
+}
+
+/* === 🌚 Dark Mode (automatiskt om systemet är mörkt) === */
+@media (prefers-color-scheme: dark) {
+  .locations-wrapper {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.55);
+  }
+
+  input {
+    background-color: #2a2a2a;
+    border: 1px solid #333;
+    color: #fff;
+  }
+
+  button {
+    background-color: #4fc3f7;
+    color: #000;
+  }
+
+  button:hover {
+    background-color: #03a9f4;
+  }
+
+  .locations-list li {
+    background-color: #252525;
+    border: none;
+  }
+
+  .locations-list li:hover {
+    background-color: #333;
+  }
+
+  .locations-list li.default {
+    border: 1px solid #4fc3f7;
+    box-shadow: 0 0 10px rgba(79, 195, 247, 0.4);
+  }
+
+  .coords {
+    color: #aaa;
+  }
 }
 </style>

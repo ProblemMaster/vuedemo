@@ -91,18 +91,19 @@ watch(currentLocation, () => {
 </template>
 
 <style scoped>
+/* Light mode (default) */
 main {
-  background-color: #181818;
-  color: #f1f1f1;
+  background-color: #f9f9f9;
+  color: #222;
   padding: 2em;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   margin: 2em auto;
   max-width: 800px;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 h2 {
-  color: #4fc3f7;
+  color: #0288d1;
   font-size: 1.8rem;
   margin-bottom: 1em;
   text-align: center;
@@ -110,7 +111,22 @@ h2 {
 .location {
   display: inline-block;
   margin: 0 1em;
-  color: #ccc;
+  color: #555;
   font-size: 1rem;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  main {
+    background-color: #181818;
+    color: #f1f1f1;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  h2 {
+    color: #4fc3f7;
+  }
+  .location {
+    color: #ccc;
+  }
 }
 </style>

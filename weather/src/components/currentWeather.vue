@@ -58,14 +58,15 @@ function windDirectionStyle(deg) {
 </template>
 
 <style scoped>
+/* Light mode (default) */
 div {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   gap: 1.5em;
-  background-color: #1e1e1e;
+  background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 1.5em;
   margin-top: 1em;
 }
@@ -73,27 +74,38 @@ ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  color: #f1f1f1;
+  color: #222;
 }
 p {
   width: 100%;
   text-align: center;
   font-size: 1.2rem;
-  color: #4fc3f7;
+  color: #0288d1;
   margin-bottom: 0.5em;
 }
 li {
   padding: 0.3em 0;
-  color: #ccc;
+  color: #555;
 }
 .wind-direction svg {
   display: inline-block;
   vertical-align: middle;
 }
-.arrow {
-  display: inline-block;
-  transition: transform 0.4s ease;
-  color: #4fc3f7;
-  font-size: 1.2rem;
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  div {
+    background-color: #1e1e1e;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  ul {
+    color: #f1f1f1;
+  }
+  p {
+    color: #4fc3f7;
+  }
+  li {
+    color: #ccc;
+  }
 }
 </style>
