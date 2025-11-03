@@ -6,6 +6,10 @@ import NollStall from './components/NollStall.vue'
 </script>
 
 <template>
+  <header>
+    <h1>Sten, sax, påse</h1>
+    <p>Revisited</p>
+  </header>
   <KnappRad />
   <ResultatRad />
   <PoangRad />
